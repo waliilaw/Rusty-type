@@ -190,9 +190,10 @@ if event::poll(Duration::from_millis(500))?{
 
 
 let time_taken = start_time.elapsed().as_secs_f64();
-let word_count = suggestions.split_whitespace().count() as f64;
-
-let wpm = (word_count/time_taken) * 60.0;
+let char_count = suggestions.chars().count() as f64;
+let minutes = time_taken / 60.0;
+let cpm = char_count / minutes;  
+let wpm = cpm / 5.0;  
 
 disable_raw_mode()?;
 
@@ -207,12 +208,15 @@ execute!(
     SetForegroundColor(Color::Cyan),
     Print(format!("║   Time: {:.2} seconds          ║\n", time_taken)),
     SetForegroundColor(Color::Green),
-    Print(format!("║   Speed: {:.2} WPM             ║\n", wpm)),
+    Print(format!("║   WPM: {:.2}                  ║\n", wpm)),
+    Print(format!("║   CPM: {:.2}                  ║\n", cpm)),
     SetForegroundColor(Color::Yellow),
     Print("║                                 ║\n"),
     Print("╚═════════════════════════════════╝\n"),
     SetForegroundColor(Color::Reset)
 )?;
+
+
 Ok(())
 
 }
